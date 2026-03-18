@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0d1117">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="店铺自助计时系统 - 扫码即可记录到店时长">
+    <title>🕐 店铺计时系统</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- 页面标题栏 -->
+        <header class="app-header">
+            <h1>🕐 店铺计时系统</h1>
+            <p class="subtitle">自助扫码 · 轻松计时</p>
+        </header>
+
+        <!-- 隐私模式提示 -->
+        <div id="privacy-warning" class="privacy-warning">
+            ⚠️ 检测到您正在使用隐私/无痕模式，计时数据可能无法保留。请使用普通模式访问。
+        </div>
+
+        <!-- 错误提示 Toast -->
+        <div id="error-toast" class="error-toast"></div>
+
+        <!-- ===== 加载视图 ===== -->
+        <div id="loading-view" class="view card active">
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">正在加载...</p>
+            </div>
+        </div>
+
+        <!-- ===== 空闲视图（未入场） ===== -->
+        <div id="idle-view" class="view card">
+            <p class="status-text">欢迎光临，点击下方按钮开始计时 👇</p>
+            <button id="start-btn" class="btn btn-start">
+                ⏱ 开始计时
+            </button>
+        </div>
+
+        <!-- ===== 计时中视图（已入场） ===== -->
+        <div id="active-view" class="view card">
+            <p class="status-text active-status">✅ 已入场，正在计时...</p>
+            <div id="timer-display" class="timer-display">00 : 00 : 00</div>
+            <button id="stop-btn" class="btn btn-stop">
+                ⏹ 结束计时
+            </button>
+            <p id="start-time-text" class="time-info"></p>
+        </div>
+
+        <!-- ===== 结束视图 ===== -->
+        <div id="done-view" class="view card">
+            <p class="status-text">🎉 本次计时已结束</p>
+            <div id="duration-display" class="duration-display"></div>
+            <div class="time-info">
+                <p id="done-start-time"></p>
+                <p id="done-end-time"></p>
+            </div>
+            <button id="restart-btn" class="btn btn-restart">
+                🔄 重新开始
+            </button>
+        </div>
+
+        <!-- 页脚 -->
+        <footer class="app-footer">
+            <p>Powered by <a href="https://deviancer.github.io" target="_blank">Deviancer</a></p>
+        </footer>
+    </div>
+
+    <!-- Supabase JS SDK (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <!-- 应用逻辑 -->
+    <script src="app.js"></script>
+
+</body>
+</html>
