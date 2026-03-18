@@ -6,7 +6,7 @@
 
 - **前端**：原生 HTML / CSS / JavaScript（零构建步骤）
 - **数据库**：Supabase (PostgreSQL) + 行级安全策略
-- **托管**：Vercel 静态文件托管
+- **托管**：Cloudflare Pages 静态文件托管（国内可直达，无需梯子）
 
 ## 文件结构
 
@@ -15,7 +15,8 @@ shop-timer/
 ├── index.html          # 主页面
 ├── style.css           # 暗色主题样式
 ├── app.js              # 应用逻辑
-├── vercel.json         # Vercel 部署配置
+├── _headers            # Cloudflare Pages 响应头配置
+├── _redirects          # Cloudflare Pages 路由配置（SPA 回退）
 ├── supabase-init.sql   # 数据库初始化 SQL
 └── README.md           # 本文件
 ```
@@ -39,7 +40,7 @@ const SUPABASE_URL = 'https://xxxxx.supabase.co';     // 替换为你的 Project
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIs...';  // 替换为你的 anon Key
 ```
 
-### 3. 部署到 Vercel
+### 3. 部署到 Cloudflare Pages
 
 1. 将此 `shop-timer` 目录作为独立 Git 仓库推送到 GitHub
    ```bash
@@ -50,17 +51,28 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIs...';  // 替换为你的 anon Ke
    git remote add origin https://github.com/YOUR_USERNAME/shop-timer.git
    git push -u origin main
    ```
-2. 登录 [Vercel](https://vercel.com)，导入该 GitHub 仓库
-3. Vercel 会自动检测为静态站点并部署
-4. 部署完成后获取访问地址（如 `https://shop-timer.vercel.app`）
+2. 登录 [Cloudflare Dashboard](https://dash.cloudflare.com)
+3. 进入 **Workers 和 Pages** → 点击 **创建** → 选择 **Pages** → **连接 Git**
+4. 选择 GitHub 仓库 `shop-timer`，配置如下：
+   - **项目名称**：`shop-timer`
+   - **构建命令**：留空（纯静态站点，无需构建）
+   - **构建输出目录**：`/`（根目录）
+5. 点击 **保存并部署**，等待部署完成
 
-### 4. 更新博客跳转地址（可选）
+### 4. 绑定自定义域名
 
-如果你的 Vercel 域名不是 `shop-timer.vercel.app`，请更新博客中的 `time.html` 文件，将跳转地址替换为实际的 Vercel 应用 URL。
+1. 在 Cloudflare Pages 项目设置中，进入 **自定义域** → 点击 **设置自定义域**
+2. 输入 `timer.deviancer.top`
+3. Cloudflare 会自动添加 DNS 记录（如果域名已在 Cloudflare 管理）
+4. 等待 DNS 生效后，访问 `https://timer.deviancer.top` 即可
 
-### 5. 生成二维码
+### 5. 更新博客跳转地址（可选）
 
-使用任意二维码生成工具（如 [草料二维码](https://cli.im)），将 Vercel 应用的 URL 生成二维码，打印后放置在店内。
+如果你的域名不是 `timer.deviancer.top`，请更新博客中的 `time.html` 文件，将跳转地址替换为实际的域名。
+
+### 6. 生成二维码
+
+使用任意二维码生成工具（如 [草料二维码](https://cli.im)），将 `https://timer.deviancer.top` 生成二维码，打印后放置在店内。
 
 ## 使用方式
 

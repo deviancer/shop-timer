@@ -1,6 +1,6 @@
 -- ============================================================
 -- Supabase 数据库初始化脚本
--- 店铺计时系统 - checkin_records 表
+-- 宝岛音游社计时工具 - checkin_records 表
 -- 在 Supabase SQL Editor 中执行此脚本
 -- ============================================================
 
@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS public.checkin_records (
     device_id   VARCHAR(64) NOT NULL,
     start_time  TIMESTAMP WITH TIME ZONE NOT NULL,
     end_time    TIMESTAMP WITH TIME ZONE,
+    spending    NUMERIC(10,2),
     created_at  TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL
 );
 
@@ -19,6 +20,7 @@ COMMENT ON COLUMN public.checkin_records.id IS '记录唯一标识';
 COMMENT ON COLUMN public.checkin_records.device_id IS '客户设备唯一标识（UUID，由前端 localStorage 生成）';
 COMMENT ON COLUMN public.checkin_records.start_time IS '入场时间（客户端传入）';
 COMMENT ON COLUMN public.checkin_records.end_time IS '离场时间（结束计时时更新）';
+COMMENT ON COLUMN public.checkin_records.spending IS '本次消费金额（元，根据时长自动计算）';
 COMMENT ON COLUMN public.checkin_records.created_at IS '记录创建时间';
 
 -- 3. 创建索引
@@ -71,4 +73,8 @@ CREATE POLICY "允许匿名更新记录"
 --    - Project URL（如 https://xxxxx.supabase.co）
 --    - anon public Key
 -- 2. 将上述值填入 app.js 顶部的配置常量中
+--
+-- ❗ 如果表已存在，只需执行以下语句添加 spending 字段：
+-- ALTER TABLE public.checkin_records
+--     ADD COLUMN IF NOT EXISTS spending NUMERIC(10,2);
 -- ============================================================

@@ -6,8 +6,8 @@
     <meta name="theme-color" content="#0d1117">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="description" content="店铺自助计时系统 - 扫码即可记录到店时长">
-    <title>🕐 店铺计时系统</title>
+    <meta name="description" content="宝岛音游社计时工具 - 扫码即可记录到店时长">
+    <title>🎮 宝岛音游社计时工具</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,9 +15,15 @@
     <div class="app-container">
         <!-- 页面标题栏 -->
         <header class="app-header">
-            <h1>🕐 店铺计时系统</h1>
+            <h1>🎮 宝岛音游社计时工具</h1>
             <p class="subtitle">自助扫码 · 轻松计时</p>
         </header>
+
+        <!-- 店铺公告信息 -->
+        <div class="shop-notice">
+            <p>🎲 只打桌游和麻将<strong>32元封顶</strong></p>
+            <p>🧊 饮料价格详见冰箱标注，有疑问可咨询群主</p>
+        </div>
 
         <!-- 隐私模式提示 -->
         <div id="privacy-warning" class="privacy-warning">
@@ -57,6 +63,10 @@
         <div id="done-view" class="view card">
             <p class="status-text">🎉 本次计时已结束</p>
             <div id="duration-display" class="duration-display"></div>
+            <div id="price-display" class="price-display">
+                <span class="price-label">本次消费</span>
+                <span id="price-amount" class="price-amount"></span>
+            </div>
             <div class="time-info">
                 <p id="done-start-time"></p>
                 <p id="done-end-time"></p>
@@ -72,8 +82,27 @@
         </footer>
     </div>
 
-    <!-- Supabase JS SDK (CDN) -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- CDN 加载超时检测：如果 SDK 长时间未加载，显示错误提示 -->
+    <script>
+    (function(){
+        var timer = setTimeout(function(){
+            if(typeof supabase==='undefined'){
+                var lv=document.getElementById('loading-view');
+                if(lv) lv.innerHTML=
+                    '<div style="text-align:center;padding:40px">'+
+                    '<p style="color:#da3633;font-size:1.1em">⚠️ 页面资源加载失败</p>'+
+                    '<p style="color:#8b949e;font-size:0.85em;margin-top:10px">网络连接异常，请刷新重试</p>'+
+                    '<button onclick="location.reload()" style="margin-top:20px;padding:12px 36px;background:#238636;color:#fff;border:none;border-radius:8px;font-size:1em;cursor:pointer">刷新页面</button>'+
+                    '</div>';
+            }
+        }, 15000);
+        window.__cdnOk=function(){ clearTimeout(timer); };
+    })();
+    </script>
+    <!-- Supabase JS SDK：主 CDN + 备用 CDN 自动回退 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+            onload="window.__cdnOk()"
+            onerror="this.onerror=null;this.src='https://unpkg.com/@supabase/supabase-js@2'"></script>
     <!-- 应用逻辑 -->
     <script src="app.js"></script>
 
