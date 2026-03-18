@@ -11,8 +11,8 @@
 // ============================================================
 // 配置 - 请替换为你的 Supabase 项目信息
 // ============================================================
-const SUPABASE_URL = 'https://kfuranvinblagbtsfucj.supabase.co;       // 例如: https://xxxxx.supabase.co
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtmdXJhbnZpbmJsYWdidHNmdWNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3NzA5MjgsImV4cCI6MjA4OTM0NjkyOH0.qzkRC-lRhxjMkRjOY0NJlzDCm5ERd6YNT2TroaaC7r4'; // 公开匿名 Key
+const SUPABASE_URL = 'https://kfuranvinblagbtsfucj.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtmdXJhbnZpbmJsYWdidHNmdWNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3NzA5MjgsImV4cCI6MjA4OTM0NjkyOH0.qzkRC-lRhxjMkRjOY0NJlzDCm5ERd6YNT2TroaaC7r4';
 
 // ============================================================
 // 全局状态
@@ -77,12 +77,21 @@ async function init() {
     // 初始化设备 ID
     deviceId = getOrCreateDeviceId();
 
+    // 检查 Supabase SDK 是否加载成功
+    if (typeof supabase === 'undefined' || typeof supabase.createClient !== 'function') {
+        console.error('Supabase SDK 未加载，请检查网络连接');
+        showError('页面资源加载失败，请刷新重试');
+        showView('idle');
+        return;
+    }
+
     // 初始化 Supabase 客户端
     try {
         supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     } catch (err) {
         showError('系统初始化失败，请刷新重试');
         console.error('Supabase init error:', err);
+        showView('idle');
         return;
     }
 
@@ -91,8 +100,17 @@ async function init() {
     DOM.stopBtn.addEventListener('click', handleStop);
     DOM.restartBtn.addEventListener('click', handleRestart);
 
-    // 查询当前状态
-    await checkCurrentStatus();
+    // 查询当前状态（带超时保护）
+    try {
+        const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('请求超时')), 10000)
+        );
+        await Promise.race([checkCurrentStatus(), timeoutPromise]);
+    } catch (err) {
+        console.error('初始化超时:', err);
+        showError('加载超时，请检查网络后刷新');
+        showView('idle');
+    }
 }
 
 // ============================================================
